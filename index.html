@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Soal CPNS SKD</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh; padding: 20px; color: #333;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  .card { background: #fff; border-radius: 16px; padding: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  h1 { text-align: center; color: #4a3f8f; margin-bottom: 10px; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 25px; }
+  .btn { background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff; border: none; padding: 14px 30px; border-radius: 8px;
+    font-size: 16px; cursor: pointer; font-weight: 600;
+    transition: transform 0.2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-center { display: block; margin: 20px auto 0; }
+  .badge { display: inline-block; padding: 4px 12px;
+    border-radius: 20px; font-size: 12px; font-weight: 700;
+    margin-bottom: 15px; }
+  .badge-TWK { background: #ffe0e0; color: #c62828; }
+  .badge-TIU { background: #e0f0ff; color: #1565c0; }
+  .badge-TKP { background: #e0ffe0; color: #2e7d32; }
+  .progress-bar { height: 8px; background: #e0e0e0;
+    border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .progress-fill { height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    transition: width 0.3s; }
+  .question-text { font-size: 17px; line-height: 1.6;
+    margin-bottom: 20px; color: #222; }
+  .option { display: block; width: 100%; text-align: left;
+    background: #f7f7fb; border: 2px solid transparent;
+    padding: 14px 18px; border-radius: 10px; margin-bottom: 10px;
+    cursor: pointer; font-size: 15px; transition: all 0.2s; color: #333; }
+  .option:hover:not(.disabled) { background: #eef0ff; border-color: #667eea; }
+  .option.disabled { cursor: not-allowed; }
+  .option.correct { background: #c8e6c9; border-color: #4caf50; }
+  .option.wrong { background: #ffcdd2; border-color: #f44336; }
+  .option.selected { background: #e1e4ff; border-color: #667eea; }
+  .pembahasan { background: #fff8e1; border-left: 4px solid #ffb300;
+    padding: 15px; border-radius: 8px; margin-top: 15px;
+    font-size: 14px; line-height: 1.5; }
+  .pembahasan strong { color: #e65100; }
+  .result-score { font-size: 48px; font-weight: 800;
+    text-align: center; color: #4a3f8f; margin: 20px 0; }
+  .result-detail { display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 15px; margin: 25px 0; }
+  .result-box { background: #f7f7fb; padding: 15px;
+    border-radius: 10px; text-align: center; }
+  .result-box .label { font-size: 12px; color: #888; font-weight: 600; }
+  .result-box .value { font-size: 22px; font-weight: 800;
+    color: #4a3f8f; margin-top: 5px; }
+  .message { text-align: center; font-size: 18px; margin: 20px 0;
+    padding: 15px; border-radius: 10px; background: #e8f5e9;
+    color: #2e7d32; font-weight: 600; }
+  .hidden { display: none; }
+  @media (max-width: 500px) {
+    .card { padding: 20px; }
+    .result-detail { grid-template-columns: 1fr; }
+    .result-score { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- START -->
+  <div id="screen-start" class="card">
+    <h1>Latihan Soal CPNS SKD</h1>
+    <p class="subtitle">30 Soal Model Terbaru — TWK, TIU, TKP</p>
+    <div class="result-detail">
+      <div class="result-box"><div class="label">TWK</div><div class="value">10</div></div>
+      <div class="result-box"><div class="label">TIU</div><div class="value">10</div></div>
+      <div class="result-box"><div class="label">TKP</div><div class="value">10</div></div>
+    </div>
+    <p style="text-align:center;color:#666;font-size:14px;margin:20px 0;line-height:1.6;">
+      TWK &amp; TIU: benar = 5, salah = 0.<br>
+      TKP: skor sesuai bobot pilihan (1–5).<br>
+      Skor maksimal: 150
+    </p>
+    <button class="btn btn-center" onclick="startQuiz()">Mulai Latihan</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="screen-quiz" class="card hidden">
+    <div class="progress-bar"><div id="progress" class="progress-fill" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:15px;font-size:14px;color:#888;">
+      <span id="q-counter">Soal 1 / 30</span>
+      <span id="current-score">Skor: 0</span>
+    </div>
+    <div id="badge-container"></div>
+    <p class="question-text" id="question-text"></p>
+    <div id="options-container"></div>
+    <div id="pembahasan-container"></div>
+    <div id="next-container"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="card hidden">
+    <h1>Hasil Latihan</h1>
+    <div class="result-score" id="final-score">0 / 150</div>
+    <div id="result-message" class="message"></div>
+    <div class="result-detail">
+      <div class="result-box"><div class="label">TWK</div><div class="value" id="twk-score">0/50</div></div>
+      <div class="result-box"><div class="label">TIU</div><div class="value" id="tiu-score">0/50</div></div>
+      <div class="result-box"><div class="label">TKP</div><div class="value" id="tkp-score">0/50</div></div>
+    </div>
+    <button class="btn btn-center" onclick="restartQuiz()">Ulangi Latihan</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // ===== TWK =====
+  { tipe:"TWK",
+    pertanyaan:"Di sebuah desa yang majemuk, warga bergotong royong memperbaiki saluran irigasi meskipun lahan mereka tidak semua teraliri. Sikap ini paling mencerminkan nilai...",
+    pilihan:["A. Nasionalisme","B. Integritas","C. Bela Negara","D. Gotong Royong","E. Rela Berkorban"],
+    jawaban_benar:"D",
+    pembahasan:"Gotong royong tanpa pamrih untuk kepentingan bersama mencerminkan nilai persatuan dan kesatuan." },
+  { tipe:"TWK",
+    pertanyaan:"Seorang ASN menemukan kesalahan pencatatan keuangan yang merugikan negara. Tindakan paling mencerminkan integritas adalah...",
+    pilihan:["A. Mendiamkan agar tidak melibatkan orang lain","B. Melaporkan temuan sesuai prosedur resmi","C. Memperbaiki catatan tanpa sepengetahuan atasan","D. Meminta rekan menutupi kesalahan","E. Menunggu audit tahunan"],
+    jawaban_benar:"B",
+    pembahasan:"Integritas menuntut kejujuran dan tanggung jawab, termasuk melaporkan temuan melalui jalur resmi." },
+  { tipe:"TWK",
+    pertanyaan:"Seorang ASN melihat hoaks tentang pemerintah beredar di media sosial. Sikap paling tepat adalah...",
+    pilihan:["A. Ikut menyebarkan agar orang lain waspada","B. Diam saja karena bukan urusan pribadi","C. Memverifikasi kebenaran dan mengedukasi tanpa menyebar hoaks","D. Menghapus akun media sosial","E. Membuat hoaks tandingan"],
+    jawaban_benar:"C",
+    pembahasan:"ASN harus menjaga etika digital, memverifikasi informasi, dan tidak menyebarkan hoaks." },
+  { tipe:"TWK",
+    pertanyaan:"Seorang petugas layanan publik menghadapi warga dengan latar belakang berbeda. Sikap terbaik adalah...",
+    pilihan:["A. Melayani lebih cepat warga yang dikenal","B. Menolak melayani warga tertentu","C. Melayani sesuai prosedur tanpa membedakan latar belakang","D. Meminta warga lain melayani sendiri","E. Mengabaikan warga yang berbeda"],
+    jawaban_benar:"C",
+    pembahasan:"Pelayanan publik harus adil, objektif, dan tidak diskriminatif." },
+  { tipe:"TWK",
+    pertanyaan:"Dalam rapat, pendapat Anda berbeda dengan mayoritas. Sikap yang mencerminkan musyawarah adalah...",
+    pilihan:["A. Memaksa pendapat sendiri diterima","B. Diam dan tidak peduli","C. Menyampaikan argumen dengan data lalu menerima keputusan bersama","D. Meninggalkan rapat","E. Menyebarkan ketidaksetujuan di luar rapat"],
+    jawaban_benar:"C",
+    pembahasan:"Musyawarah menghargai perbedaan pendapat dan mengutamakan keputusan bersama." },
+  { tipe:"TWK",
+    pertanyaan:"Sikap nasionalisme dalam mendukung produk dalam negeri yang paling tepat adalah...",
+    pilihan:["A. Menolak semua produk asing","B. Hanya membeli produk luar negeri","C. Membandingkan kualitas dan mendukung produk lokal yang kompetitif","D. Tidak peduli asal produk","E. Memboikot semua produk impor"],
+    jawaban_benar:"C",
+    pembahasan:"Nasionalisme tidak berarti menutup diri, tetapi mendukung produk lokal secara rasional dan kompetitif." },
+  { tipe:"TWK",
+    pertanyaan:"Wujud bela negara non-fisik bagi seorang ASN adalah...",
+    pilihan:["A. Mengikuti konflik bersenjata","B. Taat hukum dan melaksanakan tugas profesional","C. Menghindari pajak","D. Hanya aktif di media sosial","E. Menolak tugas yang sulit"],
+    jawaban_benar:"B",
+    pembahasan:"Bela negara non-fisik dapat dilakukan dengan taat hukum, disiplin, dan bekerja profesional." },
+  { tipe:"TWK",
+    pertanyaan:"Tetangga yang berbeda agama ingin beribadah. Sikap toleransi yang tepat adalah...",
+    pilihan:["A. Melarang karena berbeda","B. Menghormati dan menjaga keamanan lingkungan","C. Memaksa pindah tempat ibadah","D. Mengabaikan gangguan","E. Menyebarkan ujaran kebencian"],
+    jawaban_benar:"B",
+    pembahasan:"Toleransi berarti menghormati hak beribadah orang lain sesuai hukum." },
+  { tipe:"TWK",
+    pertanyaan:"Anda menerima hadiah dari vendor yang sedang mengikuti tender. Tindakan yang mencerminkan anti-korupsi adalah...",
+    pilihan:["A. Menerima karena sudah biasa","B. Menolak dan melaporkan sesuai ketentuan","C. Menerima diam-diam","D. Membagikan hadiah kepada rekan","E. Meminta hadiah lebih besar"],
+    jawaban_benar:"B",
+    pembahasan:"Gratifikasi yang berhubungan dengan jabatan harus ditolak dan dilaporkan." },
+  { tipe:"TWK",
+    pertanyaan:"Program bantuan bagi kelompok rentan paling mencerminkan sila ke-5 jika...",
+    pilihan:["A. Diberikan hanya kepada pendukung tertentu","B. Diberikan tanpa data","C. Tepat sasaran berdasarkan data dan kebutuhan","D. Tidak perlu dijalankan","E. Hanya untuk keluarga pejabat"],
+    jawaban_benar:"C",
+    pembahasan:"Keadilan sosial berarti bantuan diberikan secara adil dan tepat sasaran." },
+
+  // ===== TIU =====
+  { tipe:"TIU",
+    pertanyaan:"Jika 3 pekerja menyelesaikan proyek dalam 12 hari, berapa hari yang dibutuhkan 6 pekerja untuk proyek yang sama?",
+    pilihan:["A. 4 hari","B. 6 hari","C. 8 hari","D. 10 hari","E. 24 hari"],
+    jawaban_benar:"B",
+    pembahasan:"Perbandingan berbalik nilai: 3 × 12 = 6 × x, maka x = 6 hari." },
+  { tipe:"TIU",
+    pertanyaan:"Kata yang memiliki makna paling dekat dengan KREDIBEL adalah...",
+    pilihan:["A. Populer","B. Terpercaya","C. Cerdas","D. Berwibawa","E. Kuat"],
+    jawaban_benar:"B",
+    pembahasan:"Kredibel berarti dapat dipercaya atau terpercaya." },
+  { tipe:"TIU",
+    pertanyaan:"Lanjutkan deret: 2, 6, 12, 20, 30, ...",
+    pilihan:["A. 36","B. 38","C. 40","D. 42","E. 44"],
+    jawaban_benar:"D",
+    pembahasan:"Selisih: 4, 6, 8, 10, maka selisih berikutnya 12. 30 + 12 = 42." },
+  { tipe:"TIU",
+    pertanyaan:"Jika x = 3, y = 4, dan z = 5, maka nilai (x + y)² − z² adalah...",
+    pilihan:["A. 16","B. 20","C. 24","D. 25","E. 30"],
+    jawaban_benar:"C",
+    pembahasan:"(3 + 4)² − 5² = 49 − 25 = 24." },
+  { tipe:"TIU",
+    pertanyaan:"Semua ASN wajib disiplin. Budi adalah ASN. Kesimpulan yang tepat adalah...",
+    pilihan:["A. Budi wajib disiplin","B. Budi tidak wajib disiplin","C. Budi mungkin disiplin","D. Budi bukan ASN","E. Tidak dapat disimpulkan"],
+    jawaban_benar:"A",
+    pembahasan:"Karena semua ASN wajib disiplin dan Budi ASN, maka Budi wajib disiplin." },
+  { tipe:"TIU",
+    pertanyaan:"DOKTER : PASIEN = GURU : ...",
+    pilihan:["A. Sekolah","B. Buku","C. Siswa","D. Papan tulis","E. Kelas"],
+    jawaban_benar:"C",
+    pembahasan:"Dokter melayani pasien, guru mendidik siswa." },
+  { tipe:"TIU",
+    pertanyaan:"Nilai dari 25% × 80 + ¼ × 40 adalah...",
+    pilihan:["A. 20","B. 30","C. 40","D. 50","E. 60"],
+    jawaban_benar:"B",
+    pembahasan:"25% × 80 = 20, ¼ × 40 = 10. Total = 30." },
+  { tipe:"TIU",
+    pertanyaan:"Perbandingan uang A dan B adalah 3 : 5. Jika total uang mereka Rp64.000, selisih uang mereka adalah...",
+    pilihan:["A. Rp8.000","B. Rp12.000","C. Rp16.000","D. Rp24.000","E. Rp40.000"],
+    jawaban_benar:"C",
+    pembahasan:"Total bagian = 8. Selisih bagian = 2. Selisih = 2/8 × 64.000 = Rp16.000." },
+  { tipe:"TIU",
+    pertanyaan:"Jika hari ini Rabu, maka 100 hari lagi adalah hari...",
+    pilihan:["A. Senin","B. Kamis","C. Sabtu","D. Jumat","E. Rabu"],
+    jawaban_benar:"D",
+    pembahasan:"100 mod 7 = 2. Rabu + 2 hari = Jumat." },
+  { tipe:"TIU",
+    pertanyaan:"Kata yang paling dekat maknanya dengan MITIGASI adalah...",
+    pilihan:["A. Peningkatan","B. Pemulihan","C. Pengurangan risiko","D. Pengabaian","E. Perluasan"],
+    jawaban_benar:"C",
+    pembahasan:"Mitigasi berarti tindakan mengurangi risiko atau dampak." },
+
+  // ===== TKP =====
+  { tipe:"TKP",
+    pertanyaan:"Anda petugas loket pelayanan publik. Seorang warga datang dengan berkas tidak lengkap dan mendesak. Apa yang Anda lakukan?",
+    pilihan:["A. Meminta warga pulang dan kembali besok tanpa penjelasan.","B. Menolak berkas dan hanya menyebut tidak lengkap.","C. Membantu memahami kekurangan berkas dan menawarkan solusi tercepat sesuai prosedur.","D. Meminta warga menunggu lama tanpa kepastian.","E. Mengabaikan warga karena bukan prioritas."],
+    bobot:{A:2,B:1,C:5,D:1,E:1},
+    pembahasan:"Pilihan C menunjukkan orientasi pelayanan, empati, dan solusi profesional." },
+  { tipe:"TKP",
+    pertanyaan:"Rekan kerja Anda melakukan kesalahan kecil dalam laporan. Apa yang Anda lakukan?",
+    pilihan:["A. Membiarkan agar tidak dianggap ikut campur.","B. Melaporkan langsung ke atasan tanpa memberi tahu rekan.","C. Menegur dengan baik dan membantu memperbaiki sebelum berdampak besar.","D. Menyebarkan kesalahan rekan kepada tim lain.","E. Ikut melakukan kesalahan yang sama."],
+    bobot:{A:2,B:2,C:5,D:1,E:1},
+    pembahasan:"Pilihan C mencerminkan kolaborasi, tanggung jawab, dan komunikasi yang baik." },
+  { tipe:"TKP",
+    pertanyaan:"Atasan memberikan tugas mendadak dengan tenggat singkat. Sikap Anda...",
+    pilihan:["A. Menolak karena tidak sesuai rencana.","B. Mengerjakan semampunya tanpa prioritas.","C. Menyusun prioritas, berkomunikasi dengan atasan, dan mengerjakan secara efektif.","D. Meminta rekan mengerjakan seluruhnya.","E. Menunda sampai mendekati tenggat."],
+    bobot:{A:1,B:2,C:5,D:2,E:1},
+    pembahasan:"Pilihan C menunjukkan manajemen waktu, komunikasi, dan tanggung jawab." },
+  { tipe:"TKP",
+    pertanyaan:"Warga marah karena antrean layanan panjang. Apa yang Anda lakukan?",
+    pilihan:["A. Membalas dengan tegas agar warga diam.","B. Mengabaikan karena antrean bukan kesalahan Anda.","C. Mendengarkan dengan empati, menjelaskan situasi, dan menawarkan solusi.","D. Meminta keamanan mengeluarkan warga.","E. Menyalahkan sistem di depan warga."],
+    bobot:{A:1,B:1,C:5,D:1,E:2},
+    pembahasan:"Pilihan C menunjukkan empati, komunikasi publik, dan orientasi solusi." },
+  { tipe:"TKP",
+    pertanyaan:"Anda menemukan data dalam laporan kurang akurat. Tindakan Anda...",
+    pilihan:["A. Membiarkan karena bukan bagian tugas Anda.","B. Mengubah data tanpa dokumentasi.","C. Memverifikasi, memperbaiki sesuai prosedur, dan melaporkan perubahan.","D. Menghapus laporan tersebut.","E. Menyalahkan pembuat data di media sosial."],
+    bobot:{A:1,B:2,C:5,D:1,E:1},
+    pembahasan:"Pilihan C menunjukkan integritas, ketelitian, dan tanggung jawab." },
+  { tipe:"TKP",
+    pertanyaan:"Tim Anda berbeda pendapat dalam menentukan solusi. Sikap Anda...",
+    pilihan:["A. Memaksakan pendapat sendiri.","B. Diam dan mengikuti siapa yang paling senior.","C. Memfasilitasi diskusi, mendengar semua pendapat, dan mencari solusi terbaik.","D. Meninggalkan diskusi.","E. Membentuk kelompok lain."],
+    bobot:{A:1,B:2,C:5,D:1,E:1},
+    pembahasan:"Pilihan C mencerminkan musyawarah, kepemimpinan, dan kolaborasi." },
+  { tipe:"TKP",
+    pertanyaan:"Anda ditawari uang oleh pihak yang ingin mempercepat proses layanan di luar prosedur. Tindakan Anda...",
+    pilihan:["A. Menerima karena tidak ada yang tahu.","B. Menolak dan melaporkan sesuai ketentuan.","C. Menerima tetapi tetap memproses sesuai prosedur.","D. Meminta jumlah lebih besar.","E. Menerima untuk dibagikan ke tim."],
+    bobot:{A:1,B:5,C:2,D:1,E:1},
+    pembahasan:"Pilihan B menunjukkan integritas dan komitmen anti-korupsi." },
+  { tipe:"TKP",
+    pertanyaan:"Sebagai ASN, Anda aktif di media sosial. Sikap yang tepat adalah...",
+    pilihan:["A. Bebas menyebar informasi tanpa verifikasi.","B. Menghindari media sosial sepenuhnya.","C. Bijak bermedia sosial, memverifikasi informasi, dan tidak menyebar hoaks.","D. Hanya membagikan informasi yang viral.","E. Menggunakan akun anonim untuk mengkritik."],
+    bobot:{A:1,B:2,C:5,D:1,E:1},
+    pembahasan:"Pilihan C menunjukkan etika digital dan tanggung jawab sebagai ASN." },
+  { tipe:"TKP",
+    pertanyaan:"Rekan Anda cuti dan pekerjaannya menumpuk. Apa yang Anda lakukan?",
+    pilihan:["A. Membiarkan karena bukan tanggung jawab Anda.","B. Mengambil semua pekerjaan tanpa koordinasi.","C. Berkoordinasi dengan atasan dan membantu sesuai kapasitas.","D. Meminta rekan lain menyelesaikan semuanya.","E. Menunggu rekan kembali."],
+    bobot:{A:1,B:3,C:5,D:1,E:1},
+    pembahasan:"Pilihan C menunjukkan kerja sama, koordinasi, dan tanggung jawab." },
+  { tipe:"TKP",
+    pertanyaan:"Layanan di unit Anda dinilai lambat. Anda memiliki ide perbaikan. Sikap Anda...",
+    pilihan:["A. Diam karena bukan atasan.","B. Mengkritik layanan di media sosial.","C. Mengusulkan perbaikan berbasis data melalui jalur yang tepat.","D. Menunggu orang lain bergerak.","E. Menyalahkan rekan kerja."],
+    bobot:{A:1,B:1,C:5,D:2,E:1},
+    pembahasan:"Pilihan C menunjukkan inovasi, orientasi hasil, dan komunikasi profesional." }
+];
+
+let currentIndex = 0;
+let score = 0;
+let scoreByType = { TWK: 0, TIU: 0, TKP: 0 };
+let answered = false;
+const letters = ['A','B','C','D','E'];
+
+function startQuiz() {
+  document.getElementById('screen-start').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  currentIndex = 0; score = 0;
+  scoreByType = { TWK: 0, TIU: 0, TKP: 0 };
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[currentIndex];
+  document.getElementById('progress').style.width = (currentIndex / questions.length * 100) + '%';
+  document.getElementById('q-counter').textContent = `Soal ${currentIndex + 1} / ${questions.length}`;
+  document.getElementById('current-score').textContent = `Skor: ${score}`;
+  document.getElementById('badge-container').innerHTML = `<span class="badge badge-${q.tipe}">${q.tipe}</span>`;
+  document.getElementById('question-text').textContent = q.pertanyaan;
+  const optContainer = document.getElementById('options-container');
+  optContainer.innerHTML = '';
+  q.pilihan.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => handleAnswer(letters[i], btn);
+    optContainer.appendChild(btn);
+  });
+  document.getElementById('pembahasan-container').innerHTML = '';
+  document.getElementById('next-container').innerHTML = '';
+}
+
+function handleAnswer(letter, btn) {
+  if (answered) return;
+  answered = true;
+  const q = questions[currentIndex];
+  const options = document.querySelectorAll('.option');
+  let gain = 0, feedback = '';
+
+  if (q.tipe === 'TKP') {
+    gain = q.bobot[letter] || 0;
+    options.forEach(o => o.classList.add('disabled'));
+    btn.classList.add('selected');
+    feedback = `Skor untuk soal ini: <strong>${gain}/5</strong>`;
+  } else {
+    const correct = letter === q.jawaban_benar;
+    options.forEach(o => o.classList.add('disabled'));
+    if (correct) {
+      gain = 5;
+      btn.classList.add('correct');
+      feedback = `<strong>Jawaban Benar! (+5)</strong>`;
+    } else {
+      btn.classList.add('wrong');
+      options[letters.indexOf(q.jawaban_benar)].classList.add('correct');
+      feedback = `<strong>Jawaban Salah.</strong> Jawaban benar: <strong>${q.jawaban_benar}</strong> (0)`;
+    }
+  }
+
+  score += gain;
+  scoreByType[q.tipe] += gain;
+  document.getElementById('current-score').textContent = `Skor: ${score}`;
+  document.getElementById('pembahasan-container').innerHTML =
+    `<div class="pembahasan"><div style="margin-bottom:8px;">${feedback}</div>` +
+    `<div><strong>Pembahasan:</strong> ${q.pembahasan}</div></div>`;
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'btn btn-center';
+  if (currentIndex === questions.length - 1) {
+    nextBtn.textContent = 'Lihat Hasil';
+    nextBtn.onclick = showResult;
+  } else {
+    nextBtn.textContent = 'Soal Berikutnya →';
+    nextBtn.onclick = () => { currentIndex++; loadQuestion(); };
+  }
+  document.getElementById('next-container').appendChild(nextBtn);
+}
+
+function showResult() {
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-result').classList.remove('hidden');
+  document.getElementById('final-score').textContent = `${score} / 150`;
+  document.getElementById('twk-score').textContent = `${scoreByType.TWK}/50`;
+  document.getElementById('tiu-score').textContent = `${scoreByType.TIU}/50`;
+  document.getElementById('tkp-score').textContent = `${scoreByType.TKP}/50`;
+  const pct = (score / 150) * 100;
+  const msg = document.getElementById('result-message');
+  if (pct >= 80) {
+    msg.textContent = `Luar biasa! Kamu sudah sangat siap (${pct.toFixed(1)}%)`;
+    msg.style.background = '#e8f5e9'; msg.style.color = '#2e7d32';
+  } else if (pct >= 60) {
+    msg.textContent = `Bagus! Terus tingkatkan latihanmu (${pct.toFixed(1)}%)`;
+    msg.style.background = '#fff8e1'; msg.style.color = '#e65100';
+  } else {
+    msg.textContent = `Jangan menyerah, terus berlatih (${pct.toFixed(1)}%)`;
+    msg.style.background = '#ffebee'; msg.style.color = '#c62828';
+  }
+}
+
+function restartQuiz() {
+  document.getElementById('screen-result').classList.add('hidden');
+  document.getElementById('screen-start').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
