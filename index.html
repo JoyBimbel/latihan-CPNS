@@ -34,11 +34,12 @@
     background: linear-gradient(90deg, #667eea, #764ba2);
     transition: width 0.3s; }
   .question-text { font-size: 17px; line-height: 1.6;
-    margin-bottom: 20px; color: #222; }
+    margin-bottom: 20px; color: #222; white-space: pre-line; }
   .option { display: block; width: 100%; text-align: left;
     background: #f7f7fb; border: 2px solid transparent;
     padding: 14px 18px; border-radius: 10px; margin-bottom: 10px;
-    cursor: pointer; font-size: 15px; transition: all 0.2s; color: #333; }
+    cursor: pointer; font-size: 15px; transition: all 0.2s; color: #333;
+    white-space: pre-line; }
   .option:hover:not(.disabled) { background: #eef0ff; border-color: #667eea; }
   .option.disabled { cursor: not-allowed; }
   .option.correct { background: #c8e6c9; border-color: #4caf50; }
@@ -73,16 +74,16 @@
   <!-- START -->
   <div id="screen-start" class="card">
     <h1>Latihan Soal CPNS SKD</h1>
-    <p class="subtitle">30 Soal Model Terbaru — TWK, TIU, TKP</p>
+    <p class="subtitle">33 Soal Model HOTS Terbaru — TWK, TIU, TKP</p>
     <div class="result-detail">
       <div class="result-box"><div class="label">TWK</div><div class="value">10</div></div>
-      <div class="result-box"><div class="label">TIU</div><div class="value">10</div></div>
+      <div class="result-box"><div class="label">TIU</div><div class="value">13</div></div>
       <div class="result-box"><div class="label">TKP</div><div class="value">10</div></div>
     </div>
     <p style="text-align:center;color:#666;font-size:14px;margin:20px 0;line-height:1.6;">
       TWK &amp; TIU: benar = 5, salah = 0.<br>
       TKP: skor sesuai bobot pilihan (1–5).<br>
-      Skor maksimal: 150
+      Skor maksimal: 165
     </p>
     <button class="btn btn-center" onclick="startQuiz()">Mulai Latihan</button>
   </div>
@@ -91,7 +92,7 @@
   <div id="screen-quiz" class="card hidden">
     <div class="progress-bar"><div id="progress" class="progress-fill" style="width:0%"></div></div>
     <div style="display:flex;justify-content:space-between;margin-bottom:15px;font-size:14px;color:#888;">
-      <span id="q-counter">Soal 1 / 30</span>
+      <span id="q-counter">Soal 1 / 33</span>
       <span id="current-score">Skor: 0</span>
     </div>
     <div id="badge-container"></div>
@@ -104,11 +105,11 @@
   <!-- RESULT -->
   <div id="screen-result" class="card hidden">
     <h1>Hasil Latihan</h1>
-    <div class="result-score" id="final-score">0 / 150</div>
+    <div class="result-score" id="final-score">0 / 165</div>
     <div id="result-message" class="message"></div>
     <div class="result-detail">
       <div class="result-box"><div class="label">TWK</div><div class="value" id="twk-score">0/50</div></div>
-      <div class="result-box"><div class="label">TIU</div><div class="value" id="tiu-score">0/50</div></div>
+      <div class="result-box"><div class="label">TIU</div><div class="value" id="tiu-score">0/65</div></div>
       <div class="result-box"><div class="label">TKP</div><div class="value" id="tkp-score">0/50</div></div>
     </div>
     <button class="btn btn-center" onclick="restartQuiz()">Ulangi Latihan</button>
@@ -117,7 +118,7 @@
 
 <script>
 const questions = [
-  // ===== TWK =====
+  // ===== TWK (10 SOAL) =====
   { tipe:"TWK",
     pertanyaan:"Di sebuah desa yang majemuk, warga bergotong royong memperbaiki saluran irigasi meskipun lahan mereka tidak semua teraliri. Sikap ini paling mencerminkan nilai...",
     pilihan:["A. Nasionalisme","B. Integritas","C. Bela Negara","D. Gotong Royong","E. Rela Berkorban"],
@@ -158,18 +159,19 @@ const questions = [
     pilihan:["A. Melarang karena berbeda","B. Menghormati dan menjaga keamanan lingkungan","C. Memaksa pindah tempat ibadah","D. Mengabaikan gangguan","E. Menyebarkan ujaran kebencian"],
     jawaban_benar:"B",
     pembahasan:"Toleransi berarti menghormati hak beribadah orang lain sesuai hukum." },
+  // ⬇️ HOTS: konflik kepentingan personal
   { tipe:"TWK",
-    pertanyaan:"Anda menerima hadiah dari vendor yang sedang mengikuti tender. Tindakan yang mencerminkan anti-korupsi adalah...",
-    pilihan:["A. Menerima karena sudah biasa","B. Menolak dan melaporkan sesuai ketentuan","C. Menerima diam-diam","D. Membagikan hadiah kepada rekan","E. Meminta hadiah lebih besar"],
-    jawaban_benar:"B",
-    pembahasan:"Gratifikasi yang berhubungan dengan jabatan harus ditolak dan dilaporkan." },
+    pertanyaan:"Seorang auditor internal menemukan selisih dana signifikan dalam laporan keuangan unit. Ternyata kepala unit yang bertanggung jawab adalah sahabat dekatnya sejak kuliah. Tindakan yang paling mencerminkan integritas adalah...",
+    pilihan:["A. Membicarakan secara pribadi dulu agar sahabat bisa memperbaiki laporan sebelum dilaporkan","B. Mendiamkan karena hubungan persahabatan lebih penting daripada laporan","C. Melaporkan temuan secara objektif ke dalam laporan resmi sesuai prosedur tanpa intervensi personal","D. Meminta sahabat mengundurkan diri diam-diam agar tidak diproses hukum","E. Mengalihkan temuan kepada auditor lain agar tidak berkonflik"],
+    jawaban_benar:"C",
+    pembahasan:"Integritas menuntut objektivitas dan keberanian melaporkan temuan tanpa memandang hubungan personal. Konflik kepentingan harus dikelola dengan mengutamakan kepentingan publik, bukan relasi pribadi." },
   { tipe:"TWK",
     pertanyaan:"Program bantuan bagi kelompok rentan paling mencerminkan sila ke-5 jika...",
     pilihan:["A. Diberikan hanya kepada pendukung tertentu","B. Diberikan tanpa data","C. Tepat sasaran berdasarkan data dan kebutuhan","D. Tidak perlu dijalankan","E. Hanya untuk keluarga pejabat"],
     jawaban_benar:"C",
     pembahasan:"Keadilan sosial berarti bantuan diberikan secara adil dan tepat sasaran." },
 
-  // ===== TIU =====
+  // ===== TIU (13 SOAL) =====
   { tipe:"TIU",
     pertanyaan:"Jika 3 pekerja menyelesaikan proyek dalam 12 hari, berapa hari yang dibutuhkan 6 pekerja untuk proyek yang sama?",
     pilihan:["A. 4 hari","B. 6 hari","C. 8 hari","D. 10 hari","E. 24 hari"],
@@ -190,11 +192,12 @@ const questions = [
     pilihan:["A. 16","B. 20","C. 24","D. 25","E. 30"],
     jawaban_benar:"C",
     pembahasan:"(3 + 4)² − 5² = 49 − 25 = 24." },
+  // ⬇️ HOTS: penalaran analitis urutan duduk
   { tipe:"TIU",
-    pertanyaan:"Semua ASN wajib disiplin. Budi adalah ASN. Kesimpulan yang tepat adalah...",
-    pilihan:["A. Budi wajib disiplin","B. Budi tidak wajib disiplin","C. Budi mungkin disiplin","D. Budi bukan ASN","E. Tidak dapat disimpulkan"],
-    jawaban_benar:"A",
-    pembahasan:"Karena semua ASN wajib disiplin dan Budi ASN, maka Budi wajib disiplin." },
+    pertanyaan:"Lima pegawai (A, B, C, D, dan E) duduk berjajar di meja rapat. B duduk di paling kanan. A tepat di sebelah kiri B. D tepat di sebelah kiri C. C tepat di sebelah kiri E. Siapa yang duduk di posisi paling kiri?",
+    pilihan:["A. A","B. B","C. C","D. D","E. E"],
+    jawaban_benar:"D",
+    pembahasan:"Urutkan dari kanan: B di posisi 5, A di posisi 4. Sisa posisi 1–3 untuk D, C, E dengan aturan D–C–E (berurutan). Jadi urutan lengkap dari kiri: D, C, E, A, B. Posisi paling kiri diisi D." },
   { tipe:"TIU",
     pertanyaan:"DOKTER : PASIEN = GURU : ...",
     pilihan:["A. Sekolah","B. Buku","C. Siswa","D. Papan tulis","E. Kelas"],
@@ -220,8 +223,23 @@ const questions = [
     pilihan:["A. Peningkatan","B. Pemulihan","C. Pengurangan risiko","D. Pengabaian","E. Perluasan"],
     jawaban_benar:"C",
     pembahasan:"Mitigasi berarti tindakan mengurangi risiko atau dampak." },
+  { tipe:"TIU",
+    pertanyaan:"Perhatikan tabel berikut. Angka yang tepat untuk mengisi tanda tanya adalah...\n\n3   6   12\n4   8   16\n5   10  ?",
+    pilihan:["A. 18","B. 20","C. 22","D. 24","E. 26"],
+    jawaban_benar:"B",
+    pembahasan:"Pola setiap baris: angka kedua = angka pertama × 2, angka ketiga = angka kedua × 2. Baris ketiga: 5 × 2 = 10, lalu 10 × 2 = 20." },
+  { tipe:"TIU",
+    pertanyaan:"Perhatikan tabel berikut. Angka yang tepat untuk mengisi tanda tanya adalah...\n\n2   3   5\n4   7   13\n6   11  ?",
+    pilihan:["A. 19","B. 21","C. 23","D. 25","E. 27"],
+    jawaban_benar:"B",
+    pembahasan:"Pola dibaca per kolom: kolom 1 beda +2 (2,4,6), kolom 2 beda +4 (3,7,11), kolom 3 beda +8 (5,13,21). Jadi ? = 21." },
+  { tipe:"TIU",
+    pertanyaan:"Perhatikan tabel berikut. Angka yang tepat untuk mengisi tanda tanya adalah...\n\n1   2   4\n2   4   8\n4   8   ?",
+    pilihan:["A. 10","B. 12","C. 14","D. 16","E. 18"],
+    jawaban_benar:"D",
+    pembahasan:"Setiap angka merupakan dua kali angka di kiri atau atasnya. Pola konsisten baik per baris, per kolom, maupun diagonal. Jadi 8 × 2 = 16." },
 
-  // ===== TKP =====
+  // ===== TKP (10 SOAL) =====
   { tipe:"TKP",
     pertanyaan:"Anda petugas loket pelayanan publik. Seorang warga datang dengan berkas tidak lengkap dan mendesak. Apa yang Anda lakukan?",
     pilihan:["A. Meminta warga pulang dan kembali besok tanpa penjelasan.","B. Menolak berkas dan hanya menyebut tidak lengkap.","C. Membantu memahami kekurangan berkas dan menawarkan solusi tercepat sesuai prosedur.","D. Meminta warga menunggu lama tanpa kepastian.","E. Mengabaikan warga karena bukan prioritas."],
@@ -237,11 +255,12 @@ const questions = [
     pilihan:["A. Menolak karena tidak sesuai rencana.","B. Mengerjakan semampunya tanpa prioritas.","C. Menyusun prioritas, berkomunikasi dengan atasan, dan mengerjakan secara efektif.","D. Meminta rekan mengerjakan seluruhnya.","E. Menunda sampai mendekati tenggat."],
     bobot:{A:1,B:2,C:5,D:2,E:1},
     pembahasan:"Pilihan C menunjukkan manajemen waktu, komunikasi, dan tanggung jawab." },
+  // ⬇️ HOTS: sistem error + lansia (multi-dilema)
   { tipe:"TKP",
-    pertanyaan:"Warga marah karena antrean layanan panjang. Apa yang Anda lakukan?",
-    pilihan:["A. Membalas dengan tegas agar warga diam.","B. Mengabaikan karena antrean bukan kesalahan Anda.","C. Mendengarkan dengan empati, menjelaskan situasi, dan menawarkan solusi.","D. Meminta keamanan mengeluarkan warga.","E. Menyalahkan sistem di depan warga."],
-    bobot:{A:1,B:1,C:5,D:1,E:2},
-    pembahasan:"Pilihan C menunjukkan empati, komunikasi publik, dan orientasi solusi." },
+    pertanyaan:"Senin pagi, sistem antrean layanan daring di kantor Anda error. Puluhan warga mengantre, termasuk seorang lansia yang tampak kebingungan dan sudah menunggu lebih dari 2 jam. Apa yang Anda lakukan?",
+    pilihan:["A. Menyuruh semua warga pulang dan datang lagi besok karena sistem tidak bisa diakses.","B. Meminta bagian IT memperbaiki sistem dan meminta warga menunggu tanpa penjelasan.","C. Mendatangi lansia, membantu mengurus berkasnya secara manual sesuai prosedur darurat, dan memberi estimasi waktu kepada warga lain.","D. Mengabaikan lansia karena semua warga memiliki hak yang sama untuk menunggu.","E. Menyalahkan sistem di depan warga agar tidak disalahkan."],
+    bobot:{A:1,B:2,C:5,D:2,E:1},
+    pembahasan:"Pilihan C menunjukkan orientasi pelayanan, empati terhadap kelompok rentan (lansia), kemampuan mencari solusi (prosedur darurat), dan komunikasi publik yang baik — elemen kunci soal TKP HOTS." },
   { tipe:"TKP",
     pertanyaan:"Anda menemukan data dalam laporan kurang akurat. Tindakan Anda...",
     pilihan:["A. Membiarkan karena bukan bagian tugas Anda.","B. Mengubah data tanpa dokumentasi.","C. Memverifikasi, memperbaiki sesuai prosedur, dan melaporkan perubahan.","D. Menghapus laporan tersebut.","E. Menyalahkan pembuat data di media sosial."],
@@ -252,11 +271,12 @@ const questions = [
     pilihan:["A. Memaksakan pendapat sendiri.","B. Diam dan mengikuti siapa yang paling senior.","C. Memfasilitasi diskusi, mendengar semua pendapat, dan mencari solusi terbaik.","D. Meninggalkan diskusi.","E. Membentuk kelompok lain."],
     bobot:{A:1,B:2,C:5,D:1,E:1},
     pembahasan:"Pilihan C mencerminkan musyawarah, kepemimpinan, dan kolaborasi." },
+  // ⬇️ HOTS: gratifikasi terselubung
   { tipe:"TKP",
-    pertanyaan:"Anda ditawari uang oleh pihak yang ingin mempercepat proses layanan di luar prosedur. Tindakan Anda...",
-    pilihan:["A. Menerima karena tidak ada yang tahu.","B. Menolak dan melaporkan sesuai ketentuan.","C. Menerima tetapi tetap memproses sesuai prosedur.","D. Meminta jumlah lebih besar.","E. Menerima untuk dibagikan ke tim."],
-    bobot:{A:1,B:5,C:2,D:1,E:1},
-    pembahasan:"Pilihan B menunjukkan integritas dan komitmen anti-korupsi." },
+    pertanyaan:"Seorang vendor rekanan menawarkan bantuan biaya pendidikan anak Anda yang sedang sakit, sebagai ucapan terima kasih atas kerja sama yang selama ini berjalan lancar. Apa yang Anda lakukan?",
+    pilihan:["A. Menerima karena vendor sudah dianggap seperti keluarga sendiri.","B. Menerima diam-diam, tetapi tidak akan mempengaruhi proses tender berikutnya.","C. Menolak dengan sopan, menjelaskan bahwa itu melanggar kode etik, dan melaporkan sesuai ketentuan gratifikasi.","D. Menerima, tetapi mencatatnya sebagai pinjaman pribadi.","E. Menolak sambil menyebarkan cerita bahwa vendor tersebut mencoba menyuap."],
+    bobot:{A:1,B:2,C:5,D:2,E:2},
+    pembahasan:"Pilihan C menunjukkan integritas dalam menghadapi gratifikasi terselubung, tetap sopan secara personal, dan mengikuti prosedur pelaporan yang benar — kombinasi etika dan profesionalisme." },
   { tipe:"TKP",
     pertanyaan:"Sebagai ASN, Anda aktif di media sosial. Sikap yang tepat adalah...",
     pilihan:["A. Bebas menyebar informasi tanpa verifikasi.","B. Menghindari media sosial sepenuhnya.","C. Bijak bermedia sosial, memverifikasi informasi, dan tidak menyebar hoaks.","D. Hanya membagikan informasi yang viral.","E. Menggunakan akun anonim untuk mengkritik."],
@@ -357,11 +377,12 @@ function handleAnswer(letter, btn) {
 function showResult() {
   document.getElementById('screen-quiz').classList.add('hidden');
   document.getElementById('screen-result').classList.remove('hidden');
-  document.getElementById('final-score').textContent = `${score} / 150`;
+  const maxScore = 165;
+  document.getElementById('final-score').textContent = `${score} / ${maxScore}`;
   document.getElementById('twk-score').textContent = `${scoreByType.TWK}/50`;
-  document.getElementById('tiu-score').textContent = `${scoreByType.TIU}/50`;
+  document.getElementById('tiu-score').textContent = `${scoreByType.TIU}/65`;
   document.getElementById('tkp-score').textContent = `${scoreByType.TKP}/50`;
-  const pct = (score / 150) * 100;
+  const pct = (score / maxScore) * 100;
   const msg = document.getElementById('result-message');
   if (pct >= 80) {
     msg.textContent = `Luar biasa! Kamu sudah sangat siap (${pct.toFixed(1)}%)`;
